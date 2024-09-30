@@ -239,6 +239,7 @@ function EventDetails() {
         )}
       </section>
 
+      {/* Edit Modal */}
       {isEditing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
@@ -246,8 +247,65 @@ function EventDetails() {
               Edit Booking
             </h3>
             <div className="space-y-4">
-              {/* Edit form fields */}
-              {/* Similar to above */}
+              <label className="block">
+                Full Name:
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block">
+                Ticket Quantity:
+                <input
+                  type="number"
+                  name="ticketQuantity"
+                  value={formData.ticketQuantity}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block">
+                Ticket Type:
+                <input
+                  type="text"
+                  name="ticketType"
+                  value={formData.ticketType}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block">
+                Email:
+                <input
+                  type="email"
+                  name="userEmail"
+                  value={formData.userEmail}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block">
+                Phone:
+                <input
+                  type="tel"
+                  name="userPhone"
+                  value={formData.userPhone}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block">
+                Special Request:
+                <textarea
+                  name="specialRequest"
+                  value={formData.specialRequest}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </label>
             </div>
             <div className="flex justify-end space-x-4 mt-6">
               <button
