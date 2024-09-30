@@ -13,6 +13,7 @@ const BookingPage = () => {
         ticketType: '',
         specialRequests: ''
     });
+    const [errors, setErrors] = useState({});
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const userId = currentUser ? currentUser.userID : null; // Safely get userID
 
@@ -28,14 +29,59 @@ const BookingPage = () => {
         fetchEventDetails();
     }, [id]);
 
-    // Handle form data changes
+    // Handle form data changes with strict validation
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        let inputValue = value;
+        let updatedErrors = { ...errors };
+
+        // Validation logic for Full Name (allow only alphabetic characters and space)
+        if (name === 'fullName') {
+            inputValue = value.replace(/[^A-Za-z\s]/g, ''); // Remove non-alphabetic characters
+            if (value !== inputValue) {
+                updatedErrors.fullName = 'Only letters and spaces are allowed for Full Name';
+            } else {
+                delete updatedErrors.fullName;
+            }
+        }
+
+        // Validation logic for Phone (allow only numbers, and exactly 10 digits)
+        if (name === 'phone') {
+            inputValue = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+            if (inputValue.length > 10) {
+                inputValue = inputValue.slice(0, 10); // Restrict to 10 digits
+            }
+            if (inputValue.length !== 10) {
+                updatedErrors.phone = 'Phone number must be exactly 10 digits';
+            } else {
+                delete updatedErrors.phone;
+            }
+        }
+
+        // Validation logic for Email (check if email structure is valid)
+        if (name === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email regex pattern
+            if (!emailRegex.test(value)) {
+                updatedErrors.email = 'Invalid email address';
+            } else {
+                delete updatedErrors.email;
+            }
+        }
+
+        // Set the sanitized input value to the state
+        setFormData({ ...formData, [name]: inputValue });
+        setErrors(updatedErrors);
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Perform final validation checks before submission
+        if (Object.keys(errors).length > 0) {
+            alert('Please fix the errors in the form.');
+            return;
+        }
 
         try {
             const bookingData = {
@@ -65,7 +111,7 @@ const BookingPage = () => {
         <div className="flex flex-col items-center justify-center p-8 min-h-screen bg-gradient-to-r from-gray-100 to-gray-200">
             <div className="w-full max-w-6xl bg-white rounded-lg shadow-xl overflow-hidden flex flex-wrap md:flex-nowrap transform transition-all duration-500 hover:shadow-2xl">
                 
-                {/* Left section for event image */}
+                {/* Event image section */}
                 <div className="w-full md:w-1/2 p-4 relative">
                     {event && (
                         <img
@@ -76,7 +122,7 @@ const BookingPage = () => {
                     )}
                 </div>
 
-                {/* Right section for booking form */}
+                {/* Booking form section */}
                 <div className="w-full md:w-1/2 p-8" style={{ backgroundColor: '#E0F0E0' }}>
                     <h1 className="text-4xl font-bold text-green-700 mb-6">Reserve Your Event</h1>
                     <p className="text-gray-600 text-lg mb-6">Fill out the details below to confirm your booking.</p>
@@ -95,6 +141,7 @@ const BookingPage = () => {
                                 required
                                 placeholder="John Doe"
                             />
+                            {errors.fullName && <p className="text-red-500">{errors.fullName}</p>}
                         </div>
 
                         {/* Email Address */}
@@ -110,6 +157,7 @@ const BookingPage = () => {
                                 required
                                 placeholder="johndoe@example.com"
                             />
+                            {errors.email && <p className="text-red-500">{errors.email}</p>}
                         </div>
 
                         {/* Phone Number */}
@@ -125,6 +173,7 @@ const BookingPage = () => {
                                 required
                                 placeholder="07X XXXXXXX"
                             />
+                            {errors.phone && <p className="text-red-500">{errors.phone}</p>}
                         </div>
 
                         {/* Ticket Quantity */}

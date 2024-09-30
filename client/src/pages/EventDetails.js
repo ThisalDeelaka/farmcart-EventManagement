@@ -19,6 +19,7 @@ function EventDetails() {
     userPhone: "",
     specialRequest: "",
   });
+  const [errors, setErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBookings, setFilteredBookings] = useState([]);
 
@@ -40,12 +41,57 @@ function EventDetails() {
     }
   };
 
+  // Handle input changes with real-time validation
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    let updatedValue = value;
+    let updatedErrors = { ...errors };
+
+    // Restrict Full Name to alphabetic characters and spaces
+    if (name === "fullName") {
+      updatedValue = value.replace(/[^A-Za-z\s]/g, ""); // Remove non-alphabetic characters
+      if (updatedValue !== value) {
+        updatedErrors.fullName = "Only letters and spaces are allowed for Full Name";
+      } else {
+        delete updatedErrors.fullName;
+      }
+    }
+
+    // Restrict Ticket Quantity to positive numbers only
+    if (name === "ticketQuantity") {
+      updatedValue = value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+      if (updatedValue !== value || updatedValue === "" || Number(updatedValue) <= 0) {
+        updatedErrors.ticketQuantity = "Ticket quantity must be a positive number";
+      } else {
+        delete updatedErrors.ticketQuantity;
+      }
+    }
+
+    // Validate Email structure
+    if (name === "userEmail") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        updatedErrors.userEmail = "Invalid email address";
+      } else {
+        delete updatedErrors.userEmail;
+      }
+    }
+
+    // Restrict Phone to exactly 10 digits
+    if (name === "userPhone") {
+      updatedValue = value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+      if (updatedValue.length > 10) {
+        updatedValue = updatedValue.slice(0, 10); // Limit to 10 digits
+      }
+      if (updatedValue.length !== 10) {
+        updatedErrors.userPhone = "Phone number must be exactly 10 digits";
+      } else {
+        delete updatedErrors.userPhone;
+      }
+    }
+
+    setFormData({ ...formData, [name]: updatedValue });
+    setErrors(updatedErrors);
   };
 
   const handleEditBooking = (booking) => {
@@ -75,6 +121,11 @@ function EventDetails() {
   };
 
   const handleSave = async () => {
+    if (Object.keys(errors).length > 0) {
+      message.error("Please fix the errors in the form.");
+      return;
+    }
+
     try {
       await updateBooking(formData);
       setIsEditing(false);
@@ -256,6 +307,7 @@ function EventDetails() {
                   onChange={handleInputChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                 />
+                {errors.fullName && <p className="text-red-500">{errors.fullName}</p>}
               </label>
               <label className="block">
                 Ticket Quantity:
@@ -266,6 +318,9 @@ function EventDetails() {
                   onChange={handleInputChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                 />
+                {errors.ticketQuantity && (
+                  <p className="text-red-500">{errors.ticketQuantity}</p>
+                )}
               </label>
               <label className="block">
                 Ticket Type:
@@ -286,6 +341,7 @@ function EventDetails() {
                   onChange={handleInputChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                 />
+                {errors.userEmail && <p className="text-red-500">{errors.userEmail}</p>}
               </label>
               <label className="block">
                 Phone:
@@ -296,6 +352,7 @@ function EventDetails() {
                   onChange={handleInputChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                 />
+                {errors.userPhone && <p className="text-red-500">{errors.userPhone}</p>}
               </label>
               <label className="block">
                 Special Request:

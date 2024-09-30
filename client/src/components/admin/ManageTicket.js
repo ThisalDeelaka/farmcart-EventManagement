@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import { format } from "date-fns";
+import { format, isBefore, startOfToday } from "date-fns";
 import axios from "axios";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -35,8 +35,9 @@ function ManageTicket() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [errors, setErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(4); // Changed to 4 items per page
+  const [itemsPerPage] = useState(4);
 
   useEffect(() => {
     fetchTickets();
@@ -70,7 +71,47 @@ function ManageTicket() {
     }
   };
 
+  const validateInput = (name, value) => {
+    let updatedValue = value;
+    let updatedErrors = { ...errors };
+
+    // Prevent numbers and invalid characters in Title and Location
+    if (name === "title" || name === "location") {
+      updatedValue = value.replace(/[^A-Za-z\s]/g, ""); // Only allow letters and spaces
+    }
+
+    // Validate Date (only future dates)
+    if (name === "date") {
+      const selectedDate = new Date(value);
+      if (isBefore(selectedDate, startOfToday())) {
+        updatedErrors.date = "Please select a future date";
+      } else {
+        delete updatedErrors.date;
+      }
+    }
+
+    setErrors(updatedErrors);
+    return updatedValue;
+  };
+
+  const handleNewTicketChange = (e) => {
+    const { name, value } = e.target;
+    const validatedValue = validateInput(name, value);
+    setNewTicket({ ...newTicket, [name]: validatedValue });
+  };
+
+  const handleEditTicketChange = (e) => {
+    const { name, value } = e.target;
+    const validatedValue = validateInput(name, value);
+    setEditTicket({ ...editTicket, [name]: validatedValue });
+  };
+
   const addTicket = async () => {
+    if (Object.keys(errors).length > 0) {
+      showAlert("Please fix the errors before submitting.");
+      return;
+    }
+
     try {
       const response = await axios.post("/api/tickets/add-ticket", newTicket);
       setTickets([...tickets, response.data.ticket]);
@@ -84,6 +125,11 @@ function ManageTicket() {
   };
 
   const updateTicket = async () => {
+    if (Object.keys(errors).length > 0) {
+      showAlert("Please fix the errors before submitting.");
+      return;
+    }
+
     try {
       const response = await axios.put(
         `/api/tickets/tickets/${editTicket._id}`,
@@ -126,7 +172,9 @@ function ManageTicket() {
   return (
     <Card className="w-full max-w-[1220px] h-screen mx-auto bg-white rounded-lg m-5 shadow-md">
       <CardHeader className="bg-gray-100 p-4">
-        <CardTitle className="text-3xl font-semibold text-gray-800">Manage Events</CardTitle>
+        <CardTitle className="text-3xl font-semibold text-gray-800">
+          Manage Events
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
         {alertMessage && (
@@ -150,33 +198,39 @@ function ManageTicket() {
               <div className="grid gap-4 py-4">
                 <Input
                   placeholder="Image URL"
+                  name="image"
                   value={newTicket.image}
-                  onChange={(e) =>
-                    setNewTicket({ ...newTicket, image: e.target.value })
-                  }
+                  onChange={handleNewTicketChange}
                 />
+
                 <Input
                   placeholder="Title"
+                  name="title"
                   value={newTicket.title}
-                  onChange={(e) =>
-                    setNewTicket({ ...newTicket, title: e.target.value })
-                  }
+                  onChange={handleNewTicketChange}
                 />
+                {errors.title && <p className="text-red-500">{errors.title}</p>}
+
                 <Input
                   type="date"
+                  name="date"
                   value={newTicket.date}
-                  onChange={(e) =>
-                    setNewTicket({ ...newTicket, date: e.target.value })
-                  }
+                  onChange={handleNewTicketChange}
                 />
+                {errors.date && <p className="text-red-500">{errors.date}</p>}
+
                 <Input
                   placeholder="Location"
+                  name="location"
                   value={newTicket.location}
-                  onChange={(e) =>
-                    setNewTicket({ ...newTicket, location: e.target.value })
-                  }
+                  onChange={handleNewTicketChange}
                 />
-                <Button onClick={addTicket} className="bg-green-500 hover:bg-green-600 text-white">
+                {errors.location && <p className="text-red-500">{errors.location}</p>}
+
+                <Button
+                  onClick={addTicket}
+                  className="bg-green-500 hover:bg-green-600 text-white"
+                >
                   Add Event
                 </Button>
               </div>
@@ -197,7 +251,10 @@ function ManageTicket() {
             </TableHeader>
             <TableBody>
               {filteredTickets.map((ticket) => (
-                <TableRow key={ticket._id} className="bg-white hover:bg-gray-50 transition-shadow">
+                <TableRow
+                  key={ticket._id}
+                  className="bg-white hover:bg-gray-50 transition-shadow"
+                >
                   <TableCell>
                     <img
                       src={ticket.image}
@@ -267,33 +324,41 @@ function ManageTicket() {
               <div className="grid gap-4 py-4">
                 <Input
                   placeholder="Image URL"
+                  name="image"
                   value={editTicket.image}
-                  onChange={(e) =>
-                    setEditTicket({ ...editTicket, image: e.target.value })
-                  }
+                  onChange={handleEditTicketChange}
                 />
+
                 <Input
                   placeholder="Title"
+                  name="title"
                   value={editTicket.title}
-                  onChange={(e) =>
-                    setEditTicket({ ...editTicket, title: e.target.value })
-                  }
+                  onChange={handleEditTicketChange}
                 />
+                {errors.title && <p className="text-red-500">{errors.title}</p>}
+
                 <Input
                   type="date"
+                  name="date"
                   value={format(new Date(editTicket.date), "yyyy-MM-dd")}
-                  onChange={(e) =>
-                    setEditTicket({ ...editTicket, date: e.target.value })
-                  }
+                  onChange={handleEditTicketChange}
                 />
+                {errors.date && <p className="text-red-500">{errors.date}</p>}
+
                 <Input
                   placeholder="Location"
+                  name="location"
                   value={editTicket.location}
-                  onChange={(e) =>
-                    setEditTicket({ ...editTicket, location: e.target.value })
-                  }
+                  onChange={handleEditTicketChange}
                 />
-                <Button onClick={updateTicket} className="bg-blue-500 hover:bg-blue-600 text-white">
+                {errors.location && (
+                  <p className="text-red-500">{errors.location}</p>
+                )}
+
+                <Button
+                  onClick={updateTicket}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
                   Save Changes
                 </Button>
               </div>
