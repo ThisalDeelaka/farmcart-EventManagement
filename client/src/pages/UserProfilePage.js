@@ -27,7 +27,7 @@ function UserProfilePage() {
     // Fetch user bookings
     const fetchUserBookings = async (userID) => {
         try {
-            const response = await axios.get(`/api/bookings/user/${userID}`);
+            const response = await axios.get(`https://farmcarteventbackend.onrender.com/api/bookings/user/${userID}`);
             setBookings(response.data.bookings);
         } catch (error) {
             console.error("Failed to fetch bookings", error);
@@ -54,7 +54,7 @@ const handleEditBooking = (booking) => {
     // Handle delete booking
     const handleDeleteBooking = async (bookingId) => {
         try {
-            await axios.delete(`/api/bookings/${bookingId}`);
+            await axios.delete(`https://farmcarteventbackend.onrender.com/api/bookings/${bookingId}`);
             setBookings((prevBookings) =>
                 prevBookings.filter((booking) => booking._id !== bookingId)
             );
@@ -90,7 +90,7 @@ const handleEditBooking = (booking) => {
     // Update booking function
     const updateBooking = async (updatedBooking) => {
         try {
-            const response = await axios.put(`/api/bookings/${updatedBooking._id}`, updatedBooking);
+            const response = await axios.put(`https://farmcarteventbackend.onrender.com/api/bookings/${updatedBooking._id}`, updatedBooking);
             return response.data;
         } catch (error) {
             console.error("Error updating booking:", error);

@@ -9,7 +9,7 @@ const HomePage = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get("/api/tickets/getTickets");
+      const response = await axios.get("https://farmcarteventbackend.onrender.com/api/tickets/getTickets");
       setEvents(response.data.tickets || []);
     } catch (error) {
       console.error(error);

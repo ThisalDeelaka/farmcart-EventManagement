@@ -33,7 +33,7 @@ function EventDetails() {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get("/api/bookings/all");
+      const response = await axios.get("https://farmcarteventbackend.onrender.com/api/bookings/all");
       setBookings(response.data);
     } catch (error) {
       console.error("Failed to fetch bookings", error);
@@ -110,7 +110,7 @@ function EventDetails() {
   const updateBooking = async (updatedBooking) => {
     try {
       const response = await axios.put(
-        `/api/bookings/${updatedBooking._id}`,
+        `https://farmcarteventbackend.onrender.com/api/bookings/${updatedBooking._id}`,
         updatedBooking
       );
       return response.data;
@@ -139,7 +139,7 @@ function EventDetails() {
 
   const handleDeleteBooking = async (bookingId) => {
     try {
-      await axios.delete(`/api/bookings/${bookingId}`);
+      await axios.delete(`https://farmcarteventbackend.onrender.com/api/bookings/${bookingId}`);
       setBookings((prevBookings) =>
         prevBookings.filter((booking) => booking._id !== bookingId)
       );

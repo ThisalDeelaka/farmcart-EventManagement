@@ -26,7 +26,7 @@ function BookingTable() {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get("/api/bookings/all");
+      const response = await axios.get("https://farmcarteventbackend.onrender.com/api/bookings/all");
       setBookings(response.data);
     } catch (error) {
       console.error("Failed to fetch bookings", error);

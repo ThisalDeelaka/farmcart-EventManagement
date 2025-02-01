@@ -51,7 +51,7 @@ function ManageTicket() {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get(`/api/tickets/getTickets`);
+      const response = await axios.get(`https://farmcarteventbackend.onrender.com/api/tickets/getTickets`);
       setTickets(response.data.tickets);
     } catch (error) {
       console.error("Failed to fetch tickets", error);
@@ -113,7 +113,7 @@ function ManageTicket() {
     }
 
     try {
-      const response = await axios.post("/api/tickets/add-ticket", newTicket);
+      const response = await axios.post("https://farmcarteventbackend.onrender.com/api/tickets/add-ticket", newTicket);
       setTickets([...tickets, response.data.ticket]);
       setNewTicket({ image: "", title: "", date: "", location: "" });
       setIsAddDialogOpen(false);
@@ -132,7 +132,7 @@ function ManageTicket() {
 
     try {
       const response = await axios.put(
-        `/api/tickets/tickets/${editTicket._id}`,
+        `https://farmcarteventbackend.onrender.com/api/tickets/tickets/${editTicket._id}`,
         editTicket
       );
       setTickets(
@@ -152,7 +152,7 @@ function ManageTicket() {
   const deleteTicket = async (id) => {
     if (window.confirm("Are you sure you want to delete this ticket?")) {
       try {
-        await axios.delete(`/api/tickets/tickets/${id}`);
+        await axios.delete(`https://farmcarteventbackend.onrender.com/api/tickets/tickets/${id}`);
         setTickets(tickets.filter((ticket) => ticket._id !== id));
         showAlert("Ticket deleted successfully!");
       } catch (error) {

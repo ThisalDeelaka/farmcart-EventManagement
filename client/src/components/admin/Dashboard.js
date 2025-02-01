@@ -14,8 +14,8 @@ function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const bookingsResponse = await axios.get('/api/bookings/all');
-      const ticketsResponse = await axios.get('/api/tickets/getTickets');
+      const bookingsResponse = await axios.get('https://farmcarteventbackend.onrender.com/api/bookings/all');
+      const ticketsResponse = await axios.get('https://farmcarteventbackend.onrender.com/api/tickets/getTickets');
       setBookingsData(bookingsResponse.data);
       setTicketsData(ticketsResponse.data.tickets);
     } catch (error) {

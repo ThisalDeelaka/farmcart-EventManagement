@@ -17,7 +17,7 @@ function LoginPage() {
 
         try {
             const response = await axios.post(
-                "/api/users/login",
+                "https://farmcarteventbackend.onrender.com/api/users/login",
                 { email, password }
             );
 

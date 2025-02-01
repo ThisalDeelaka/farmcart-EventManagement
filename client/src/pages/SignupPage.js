@@ -58,7 +58,7 @@ function SignupPage() {
         }
 
         try {
-            const response = await axios.post('/api/users/signup', formData);
+            const response = await axios.post('https://farmcarteventbackend.onrender.com/api/users/signup', formData);
 
             if (response.status === 201) {
                 message.success(response.data.message);

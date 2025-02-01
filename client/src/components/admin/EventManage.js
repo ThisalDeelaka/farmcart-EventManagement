@@ -15,7 +15,7 @@ const EventManagement = () => {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/events');
+      const response = await axios.get('https://farmcarteventbackend.onrender.com/api/events');
       setEvents(response.data);
       setLoading(false);
     } catch (err) {
@@ -32,10 +32,10 @@ const EventManagement = () => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`/api/events/${newEvent.id}`, newEvent);
+        await axios.put(`https://farmcarteventbackend.onrender.com/api/events/${newEvent.id}`, newEvent);
         setIsEditing(false);
       } else {
-        await axios.post('/api/events', newEvent);
+        await axios.post('https://farmcarteventbackend.onrender.com/api/events', newEvent);
       }
       setNewEvent({ id: null, name: '', description: '', date: '', location: '', image: '' });
       fetchEvents();
@@ -51,7 +51,7 @@ const EventManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/events/${id}`);
+      await axios.delete(`https://farmcarteventbackend.onrender.com/api/events/${id}`);
       fetchEvents();
     } catch (err) {
       setError('Failed to delete the event');

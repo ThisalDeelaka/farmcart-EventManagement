@@ -20,7 +20,7 @@ const BookingPage = () => {
     useEffect(() => {
         const fetchEventDetails = async () => {
             try {
-                const response = await axios.get(`/api/tickets/getTickets/${id}`);
+                const response = await axios.get(`https://farmcarteventbackend.onrender.com/api/tickets/getTickets/${id}`);
                 setEvent(response.data); // Set event data once it's fetched
             } catch (error) {
                 console.error('Error fetching event details:', error);
@@ -95,7 +95,7 @@ const BookingPage = () => {
                 specialRequests: formData.specialRequests,
             };
 
-            const response = await axios.post('/api/bookings/create', bookingData);
+            const response = await axios.post('https://farmcarteventbackend.onrender.com/api/bookings/create', bookingData);
 
             if (response.status === 201) {
                 alert('Booking created successfully!');
