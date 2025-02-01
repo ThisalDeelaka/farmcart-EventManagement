@@ -24,17 +24,14 @@ function LoginPage() {
             if (response.data.message === "Login successful") {
                 message.success("Login Successful!");
 
-                // Save user data to local storage
                 localStorage.setItem(
                     "currentUser",
                     JSON.stringify(response.data.user)
                 );
 
                 if (response.data.user.userType === "Admin") {
-                    // Navigate to the admin dashboard
                     navigate("/admin/");
                 } else {
-                    // Navigate to the home page
                     navigate("/");
                 }
             } else {
@@ -49,6 +46,16 @@ function LoginPage() {
         }
     };
 
+    const fillAdminCredentials = () => {
+        setEmail("admin@gmail.com");
+        setPassword("admin");
+    };
+
+    const fillUserCredentials = () => {
+        setEmail("malisha@gmail.com");
+        setPassword("malisha");
+    };
+
     return (
         <>
             <Navbar />
@@ -57,9 +64,7 @@ function LoginPage() {
                     <div className="sg_login_main_container">
                         <form onSubmit={handleLogin}>
                             <div className="sg_login_title_main_container">
-                                <h2 className="sg_logon_title">
-                                    Hi, Welcome Back
-                                </h2>
+                                <h2 className="sg_logon_title">Hi, Welcome Back</h2>
                                 <p className="sg_login_subtitle">
                                     Enter your credentials to continue
                                 </p>
@@ -73,20 +78,25 @@ function LoginPage() {
                                     required
                                     className="sg_login_email_input"
                                 />
-                                <div className="">
+                                <div className="sg_password_input_container">
                                     <input
-                                        type={
-                                            showPassword ? "text" : "password"
-                                        }
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="Password"
                                         value={password}
-                                        onChange={(e) =>
-                                            setPassword(e.target.value)
-                                        }
+                                        onChange={(e) => setPassword(e.target.value)}
                                         required
                                         className="sg_login_password_input"
                                     />
-                                    
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="sg_custom_password_toggle"
+                                    >
+                                        <Icon
+                                            path={showPassword ? mdiEyeOff : mdiEye}
+                                            size={1}
+                                        />
+                                    </button>
                                 </div>
                             </div>
                             <div className="sg_login_remember_me">
@@ -97,19 +107,29 @@ function LoginPage() {
                                     />
                                     Remember me
                                 </label>
-                                <a
-                                    href="/"
-                                    className="sg_login_forgot_password"
-                                >
+                                <a href="/" className="sg_login_forgot_password">
                                     Forgot Password?
                                 </a>
                             </div>
-                            <button
-                                type="submit"
-                                className="sg_login_main_button"
-                            >
+                            <button type="submit" className="sg_login_main_button">
                                 Login
                             </button>
+                            <div className="sg_predefined_credentials_buttons">
+                                <button
+                                    type="button"
+                                    onClick={fillAdminCredentials}
+                                    className="sg_admin_credentials_button"
+                                >
+                                    Use Admin Credentials
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={fillUserCredentials}
+                                    className="sg_user_credentials_button"
+                                >
+                                    Use User Credentials
+                                </button>
+                            </div>
                             <p className="sg_signup_txt_main">
                                 Don't have an account?{" "}
                                 <a href="/" className="sg_signup_link">

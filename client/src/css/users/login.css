@@ -113,3 +113,69 @@
   text-decoration: underline;
   color: #ce2424;
 }
+
+/* New styles for predefined credentials buttons */
+.sg_predefined_credentials_buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.sg_admin_credentials_button,
+.sg_user_credentials_button {
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  flex: 1;
+  transition: background-color 0.3s ease;
+}
+
+.sg_admin_credentials_button:hover,
+.sg_user_credentials_button:hover {
+  background-color: #0056b3;
+}
+
+.sg_admin_credentials_button {
+  background-color: #ff595e;
+}
+
+.sg_admin_credentials_button:hover {
+  background-color: #e53e3e;
+}
+
+.sg_user_credentials_button {
+  background-color: #27ae61;
+}
+
+.sg_user_credentials_button:hover {
+  background-color: #218c50;
+}
+.sg_password_input_container {
+  position: relative;
+  width: 100%;
+}
+
+.sg_login_password_input {
+  padding-right: 40px; /* Space for the eye icon */
+}
+
+.sg_custom_password_toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #666;
+}
+
+.sg_custom_password_toggle:hover {
+  color: #333;
+}
