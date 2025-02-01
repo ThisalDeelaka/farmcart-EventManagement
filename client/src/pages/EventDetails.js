@@ -33,7 +33,7 @@ function EventDetails() {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/bookings/all");
+      const response = await axios.get("/api/bookings/all");
       setBookings(response.data);
     } catch (error) {
       console.error("Failed to fetch bookings", error);
@@ -110,7 +110,7 @@ function EventDetails() {
   const updateBooking = async (updatedBooking) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/bookings/${updatedBooking._id}`,
+        `/api/bookings/${updatedBooking._id}`,
         updatedBooking
       );
       return response.data;
@@ -139,7 +139,7 @@ function EventDetails() {
 
   const handleDeleteBooking = async (bookingId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`);
+      await axios.delete(`/api/bookings/${bookingId}`);
       setBookings((prevBookings) =>
         prevBookings.filter((booking) => booking._id !== bookingId)
       );
